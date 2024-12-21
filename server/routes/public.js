@@ -106,7 +106,7 @@ router.post('/login', [
                 console.error(err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            res.json({ token });
+            res.json({message:"login success", token: token});
         });
        
     }catch (error) {

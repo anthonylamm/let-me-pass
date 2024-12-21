@@ -4,7 +4,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar'; // Import MatSnackBar for user feedback
 
 @Component({
   selector: 'app-login',
@@ -17,35 +19,61 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
   ],
   template: `
-    <mat-card style="max-width: 400px; margin: auto; padding: 1rem;">
+    <mat-card style="max-width: 400px; margin: 50px auto; padding: 20px;">
       <h2>Login</h2>
-      <form>
-        <mat-form-field appearance="fill" style="display: block; margin-bottom: 1rem;">
+      <form (ngSubmit)="onLogin()">
+        <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
           <mat-label>Username</mat-label>
-          <input matInput [(ngModel)]="username" name="username" />
+          <input matInput [(ngModel)]="username" name="username" required />
         </mat-form-field>
 
-        <mat-form-field appearance="fill" style="display: block; margin-bottom: 1rem;">
+        <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 15px;">
           <mat-label>Password</mat-label>
-          <input matInput type="password" [(ngModel)]="password" name="password" />
+          <input matInput type="password" [(ngModel)]="password" name="password" required />
         </mat-form-field>
 
-        <button mat-raised-button color="primary" (click)="onLogin()">
-          Login
-        </button>
-        <a routerLink="/signup">Signup</a>
-        
+        <div style="text-align: right;">
+          <button mat-raised-button color="primary" type="submit">Login</button>
+          <button mat-button color="accent" type="button" (click)="onSignup()">Signup</button>
+        </div>
       </form>
     </mat-card>
   `,
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  username: string = '';
+  password: string = '';
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private snackBar: MatSnackBar // Inject MatSnackBar
+  ) {}
 
   onLogin() {
-    // Handle login logic here
-    console.log('Username:', this.username);
-    console.log('Password:', this.password);
+    if (!this.username || !this.password) {
+      this.snackBar.open('Please enter both username and password.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+    this.authService.login(this.username, this.password).subscribe(
+      (response: any) => {
+        console.log('Login response:', response);
+        this.authService.setToken(response.token);
+        this.router.navigate(['/']);
+      },
+      (error: any) => {
+        console.error('Login error:', error);
+        this.snackBar.open('Invalid username or password.', 'Close', {
+          duration: 3000,
+        });
+      }
+    );
+  }
+
+  onSignup() {
+    // Navigate to the signup page
+    this.router.navigate(['/signup']);
   }
 }
