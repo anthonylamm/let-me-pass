@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
   ],
   template: `
     <mat-card class="login-card">
-      <h2>Login</h2>
+      <h2>Welcome back!</h2>
       <form (ngSubmit)="onLogin()">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Username</mat-label>

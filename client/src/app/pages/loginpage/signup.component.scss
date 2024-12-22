@@ -1,12 +1,24 @@
-.signup-card {
-  max-width: 500px; /* Increased width */
-  margin: 50px auto;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for better aesthetics */
-}
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensures the host takes full viewport height */
+    background-color: #f5f5f5; /* Optional: Add a light background color */
+  }
+
+
+  .signup-card {
+    max-width: 600px; /* Increased width from 500px to 600px */
+    width: 100%; /* Makes the card responsive */
+    padding: 30px; /* Increased padding for better spacing */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for aesthetics */
+    border-radius: 8px; /* Rounded corners */
+  }
+
 .login-card {
     max-width: 500px; /* Increased width */
     margin: 50px auto;
+    
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for better aesthetics */
   }
@@ -51,3 +63,23 @@
     margin-top: 10px;
     text-align: center;
   }
+  /* New styles for the terms checkbox */
+.terms-container {
+  margin-bottom: 15px; /* Spacing below the checkbox */
+}
+
+.terms-container mat-checkbox {
+  /* Optional: Customize the checkbox appearance */
+  font-size: 14px;
+}
+
+/* Optional: Style the terms link */
+.terms-container a {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.terms-container a:hover {
+  color: darkblue;
+}
