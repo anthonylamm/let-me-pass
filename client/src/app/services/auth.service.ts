@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environment/environment'; // Import the environment file
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private backendUrl = 'http://localhost:3000/api';
+  private backendUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
   
@@ -15,6 +16,9 @@ export class AuthService {
   }
   setToken(token: string): void {
     localStorage.setItem('authToken', token); // Use sessionStorage for session-based storage
+  }
+  signup(username: string, email: string, password: string){
+    return this.http.post(`${this.backendUrl}/public/register`, {username, email, password});
   }
 
 }
