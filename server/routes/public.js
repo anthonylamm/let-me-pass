@@ -87,19 +87,19 @@ router.post('/login', [
     }
     const {username,password} = req.body;
     const client = await pool.connect();
-    try {
-       
-
+    try { 
         console.log(username, password)
         const results = await client.query('SELECT * FROM users WHERE username =$1', [username]);//getting results from database 
-        if (results.rows.length === 0) { //checking to see if user exists
+        if (results.rows.length === 0) //checking to see if user exists
             return res.status(400).json({ error: 'Invalid username or password' });
-        }
+        if (!results.email_verified)
+            return res.status(400).json({error: 'Please verify your email'})
+        
         const user = results.rows[0];
         const passwordMatch = await bcrypt.compare(password, user.password);//unhashing the password and comparing it to the password in the database
-        if (!passwordMatch) {
+        if (!passwordMatch) 
             return res.status(400).json({ error: 'Invalid username or password' });
-        }
+        
         jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '3h' }, (err, token) => {//creating a token to be used for authentication
             if (err) {
                 console.error(err);
@@ -115,5 +115,6 @@ router.post('/login', [
         client.release();
       }
 });
+
 
 module.exports = router;
