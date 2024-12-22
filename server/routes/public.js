@@ -1,9 +1,9 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
-const pool = require('../tools/db'); // Adjust the path as needed
+const pool = require('../utils/db'); // Adjust the path as needed
 const bcrypt = require('bcrypt');
-const { sendAuthEmail } = require('../tools/mailer'); // sendAuthEmail function
+const { sendAuthEmail } = require('../utils/mailer'); // sendAuthEmail function
 const jwt = require('jsonwebtoken');
 
 

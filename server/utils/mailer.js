@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config({ path: './data/.env' });
+const { htmlToText } = require('html-to-text'); // Import htmlToText
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST, 
@@ -21,12 +21,19 @@ transporter.verify((error, success) => {
     console.log('Nodemailer transporter is ready to send emails');
   }
 });
-
+/**
+ * Sends an authentication email.
+ * 
+ * @param {string} to - Recipient's email address.
+ * @param {string} subject - Subject of the email.
+ * @param {string} html - HTML content of the email.
+ */
 const sendAuthEmail = async (to, subject, html) => {
   const mailOptions = {
     from: `"Let Me Pass" <${process.env.SMTP_USER}>`,
     to,
     subject: `Let Me Pass - ${subject}`,
+    text: htmlToText(html), // Convert HTML to plain text
     html,
   };
   
