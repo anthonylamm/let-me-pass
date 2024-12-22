@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-
+import { ResetPasswordComponent } from './reset-password.component';
+import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -23,6 +24,7 @@ import { CommonModule } from '@angular/common';
     MatSnackBarModule,
     CommonModule,
     FormsModule,
+    ResetPasswordComponent,
   ],
   template: `
     <mat-card class="login-card">
@@ -37,6 +39,10 @@ import { CommonModule } from '@angular/common';
           <mat-label>Password</mat-label>
           <input matInput type="password" [(ngModel)]="password" name="password" required />
         </mat-form-field>
+
+        <div class="terms-container">
+          <a href="#" (click)="openRecoverPass($event)">Forgot password?</a>
+        </div>
 
         <div class="buttons-container">
           <button
@@ -76,7 +82,8 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   // Method to check if the form is valid
@@ -109,6 +116,13 @@ export class LoginComponent {
         });
       },
     });
+  }
+
+  openRecoverPass(event: Event) {
+    event.preventDefault();
+    this.dialog.open(ResetPasswordComponent, {
+      width: '300px',
+  });
   }
 
   onSignup() {

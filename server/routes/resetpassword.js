@@ -30,7 +30,7 @@ router.post('/request-password-reset', resetPasswordLimiter, [
         const userResult = await client.query('SELECT user_id FROM users WHERE email = $1', [email]);
         if (userResult.rows.length === 0) {
             // To prevent email enumeration, respond with the same message
-            return res.status(200).json({ message: 'If that email address is in our system, we have emailed you a password reset link.' });
+            return res.status(200).json({ message: 'Account does not exist, please signup to continue.' });
         }
 
         const userId = userResult.rows[0].user_id;
@@ -61,7 +61,7 @@ router.post('/request-password-reset', resetPasswordLimiter, [
         // Send the password reset email
         await sendAuthEmail(email, 'Password Reset', emailHtml);
 
-        res.status(200).json({ message: 'If that email address is in our system, we have emailed you a password reset link.' });
+        res.status(200).json({ message: `The email has been sent to ${email}. Please open to begin the reset process.` });
     } catch (err) {
         console.error('Error in /request-password-reset:', err);
         res.status(500).json({ error: 'Internal Server Error' });

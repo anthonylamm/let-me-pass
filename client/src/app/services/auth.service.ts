@@ -20,5 +20,8 @@ export class AuthService {
   signup(username: string, email: string, password: string){
     return this.http.post(`${this.backendUrl}/public/register`, {username, email, password});
   }
+  resetPassword(email: string){
+    return this.http.post(`${this.backendUrl}/reset/request-password-reset`, {email});
+  }
 
 }

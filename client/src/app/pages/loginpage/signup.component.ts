@@ -201,6 +201,7 @@ export class SignupComponent {
         }, 5000); // Redirect to login after 5 seconds
       },
       error: (error: any) => {
+        console.log( error);
         console.error('Signup error:', error);
         const errorMessage =
           error.error?.error || 'Signup failed. Please try again.';
