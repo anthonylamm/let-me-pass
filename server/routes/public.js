@@ -10,7 +10,11 @@ const jwt = require('jsonwebtoken');
 router.post('/register', [
     body('username').trim().isLength({ min: 3 }).escape().withMessage('Username must be at least 3 characters long'), //replaces invalid characters with escape() method
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+    body('password')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+        .matches(/[A-Za-z]/).withMessage('Password must contain letters.')
+        .matches(/[0-9]/).withMessage('Password must contain numbers.')
+        .matches(/[!@#$%^&*(),.?":{}|<>]/).withMessage('Password must contain symbols (!, #, $, etc.)')
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

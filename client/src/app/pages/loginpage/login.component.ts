@@ -9,8 +9,10 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { ResetPasswordComponent } from './reset-password.component';
+import { PasswordResetRequestComponent } from './components/password-reset-request.component'; // Import ResetPasswordComponent
 import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
+import {MatIcon} from '@angular/material/icon';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -24,7 +26,7 @@ import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
     MatSnackBarModule,
     CommonModule,
     FormsModule,
-    ResetPasswordComponent,
+    MatIcon,
   ],
   template: `
     <mat-card class="login-card">
@@ -37,7 +39,10 @@ import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Password</mat-label>
-          <input matInput type="password" [(ngModel)]="password" name="password" required />
+          <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required />
+          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
         </mat-form-field>
 
         <div class="terms-container">
@@ -78,6 +83,7 @@ import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 export class LoginComponent {
   username: string = '';
   password: string = '';
+  hidePassword: boolean = true; // Property to toggle password visibility
 
   constructor(
     private router: Router,
@@ -89,6 +95,11 @@ export class LoginComponent {
   // Method to check if the form is valid
   isFormValid(): boolean {
     return this.username.trim() !== '' && this.password.trim() !== '';
+  }
+
+  // Method to toggle password visibility
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
   }
 
   onLogin() {
@@ -120,9 +131,9 @@ export class LoginComponent {
 
   openRecoverPass(event: Event) {
     event.preventDefault();
-    this.dialog.open(ResetPasswordComponent, {
+    this.dialog.open(PasswordResetRequestComponent, {
       width: '300px',
-  });
+    });
   }
 
   onSignup() {

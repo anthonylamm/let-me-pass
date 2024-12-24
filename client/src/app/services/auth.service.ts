@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environment/environment'; // Import the environment file
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -22,6 +21,9 @@ export class AuthService {
   }
   resetPassword(email: string){
     return this.http.post(`${this.backendUrl}/reset/request-password-reset`, {email});
+  }
+  confirmResetPassword(token: string, password: string){
+    return this.http.post(`${this.backendUrl}/reset/reset-password`, {token, password});
   }
 
 }

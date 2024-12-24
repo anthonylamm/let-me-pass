@@ -11,8 +11,8 @@ import { AuthService } from '../../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
-import { TermsAndConditionsComponent } from './terms-and-conditions.component'; // Import the dialog component
-
+import { TermsAndConditionsComponent } from './components/terms-and-conditions.component'; // Import the dialog component
+import {MatIcon} from '@angular/material/icon';
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -27,7 +27,7 @@ import { TermsAndConditionsComponent } from './terms-and-conditions.component'; 
     MatSnackBarModule,
     CommonModule,
     FormsModule,
-    TermsAndConditionsComponent, // Declare the dialog component
+    MatIcon
   ],
   template: `
     <mat-card class="signup-card">
@@ -47,12 +47,15 @@ import { TermsAndConditionsComponent } from './terms-and-conditions.component'; 
           <mat-label>Password</mat-label>
           <input
             matInput
-            type="password"
+            [type]="hidePassword ? 'password' : 'text'"
             [(ngModel)]="password"
             name="password"
             required
             (ngModelChange)="checkPasswordStrength()"
           />
+          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
         </mat-form-field>
 
         <!-- Password Strength Indicators -->
@@ -65,18 +68,18 @@ import { TermsAndConditionsComponent } from './terms-and-conditions.component'; 
             <li [ngStyle]="{ color: passwordCriteria.symbol ? 'green' : 'red' }">
               &#10004; Includes a symbol (!,#,$, etc.)
             </li>
-            <li [ngStyle]="{ color: passwordCriteria.capital ? 'green' : 'red' }">
-              &#10004; Contains a capital letter
+            <li [ngStyle]="{ color: passwordCriteria.numbers ? 'green' : 'red' }">
+              &#10004; Contains numbers
             </li>
           </ul>
         </div>
 
         <!-- Terms and Conditions Checkbox -->
         <div class="terms-container">
-        <mat-checkbox [(ngModel)]="acceptTerms" name="acceptTerms" required>
-          I agree to the 
-          <a href="#" (click)="openTerms($event)">terms and conditions</a>
-        </mat-checkbox>
+          <mat-checkbox [(ngModel)]="acceptTerms" name="acceptTerms" required>
+            I agree to the 
+            <a href="#" (click)="openTerms($event)">terms and conditions</a>
+          </mat-checkbox>
         </div>
 
         <div class="buttons-container">
@@ -115,12 +118,13 @@ export class SignupComponent {
   email: string = '';
   password: string = '';
   acceptTerms: boolean = false; // New property for the checkbox
+  hidePassword: boolean = true; // Property to toggle password visibility
 
   // Password strength criteria
   passwordCriteria = {
     length: false,
     symbol: false,
-    capital: false,
+    numbers: false, // Added numbers
   };
 
   constructor(
@@ -135,7 +139,7 @@ export class SignupComponent {
     const password = this.password;
     this.passwordCriteria.length = password.length >= 6;
     this.passwordCriteria.symbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    this.passwordCriteria.capital = /[A-Z]/.test(password);
+    this.passwordCriteria.numbers = /[0-9]/.test(password); // Added numbers
   }
 
   // Method to determine if form is valid
@@ -148,7 +152,7 @@ export class SignupComponent {
     return (
       this.passwordCriteria.length &&
       this.passwordCriteria.symbol &&
-      this.passwordCriteria.capital
+      this.passwordCriteria.numbers // Included numbers
     );
   }
 
@@ -158,6 +162,11 @@ export class SignupComponent {
     this.dialog.open(TermsAndConditionsComponent, {
       width: '500px', 
     });
+  }
+
+  // Method to toggle password visibility
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
   }
 
   onSignup() {
