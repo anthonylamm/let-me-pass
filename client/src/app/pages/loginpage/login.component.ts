@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { PasswordResetRequestComponent } from './components/password-reset-request.component'; // Import ResetPasswordComponent
+import { DashboardComponent } from '../dashboard/dashboard.component';
 import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 import {MatIcon} from '@angular/material/icon';
 
@@ -85,6 +86,8 @@ export class LoginComponent {
   password: string = '';
   hidePassword: boolean = true; // Property to toggle password visibility
 
+ 
+
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -103,6 +106,7 @@ export class LoginComponent {
   }
 
   onLogin() {
+    console.log('Login attempt:', this.username, this.password);
     if (!this.username || !this.password) {
       this.snackBar.open('Please enter both username and password.', 'Close', {
         duration: 3000,
@@ -119,13 +123,11 @@ export class LoginComponent {
         this.router.navigate(['/dashboard']); // Redirect to dashboard or desired route
       },
       error: (error: any) => {
-        console.error('Login error:', error);
-        const errorMessage =
-          error.error?.error || 'Login failed. Please try again.';
-        this.snackBar.open(errorMessage, 'Close', {
+        console.error('Login error:', error); // Log the error
+        this.snackBar.open('Login failed. Please try again.', 'Close', {
           duration: 3000,
         });
-      },
+      }
     });
   }
 

@@ -2,7 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
 const pool = require('../utils/db'); // Adjust the path as needed
-const bcrypt = require('bcrypt');
+const argon2 = require('argon2');
 const { sendAuthEmail } = require('../utils/mailer'); // sendAuthEmail function
 const jwt = require('jsonwebtoken');
 
@@ -29,7 +29,7 @@ router.post('/register', [
         if (checkUser.rows.length > 0) {
             return res.status(400).json({ errors: [{ msg: 'Email or username already exists', param: 'username/email' }] });        }
 
-        const hashedPassword = await bcrypt.hash(password, 10);//algorithm to hash password
+        const hashedPassword = await argon2.hash(password);//algorithm to hash password
 
         const result = await client.query('INSERT INTO users (username, email, password, email_verified) VALUES ($1, $2, $3, $4) RETURNING *', [username, email, hashedPassword, false]);//inserting user into database
         console.log(result.rows[0]);
@@ -81,44 +81,45 @@ router.get('/verify-email',
 });
 
 router.post('/login', [
-    body('username').trim().escape(),
-    body('password').trim().escape()
-], async (req,res)=> {
+    body('username').trim().escape(), // replaces invalid characters with escape() method
+    body('password').trim().escape()// replaces invalid characters with escape() method
+], async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const {username,password} = req.body;
+    const { username, password } = req.body;
     const client = await pool.connect();
-    try { 
-        console.log(username, password)
-        const results = await client.query('SELECT * FROM users WHERE username =$1', [username]);//getting results from database 
-        if (results.rows.length === 0) //checking to see if user exists
-            return res.status(400).json({ error: 'Invalid username or password' });
-        if (!results.email_verified)
-            return res.status(400).json({error: 'Please verify your email'})
-        
+    try {
+        console.log(username, password);
+        const results = await client.query('SELECT * FROM users WHERE username =$1', [username]); //getting results from database
         const user = results.rows[0];
-        const passwordMatch = await bcrypt.compare(password, user.password);//unhashing the password and comparing it to the password in the database
-        if (!passwordMatch) 
+
+        if (!user) //checking to see if user exists
             return res.status(400).json({ error: 'Invalid username or password' });
-        
-        jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '3h' }, (err, token) => {//creating a token to be used for authentication
+        if (!user.email_verified) {
+            console.log(user.email_verified);
+            return res.status(400).json({ error: 'Please verify your email' });
+        }
+        const passwordMatch = await argon2.verify(user.password, password); //unhashing the password and comparing it to the password in the database
+        if (!passwordMatch)
+            return res.status(400).json({ error: 'Invalid username or password' });
+
+        jwt.sign({ user_id: user.user_id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '3h' }, (err, token) => { //creating a token to be used for authentication
             if (err) {
                 console.error(err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            res.json({message:"login success", token: token});
+            res.json({ message: "login success", token: token });
         });
-       
-    }catch (error) {
+
+    } catch (error) {
         console.error("Database query error:", error);
         return res.status(500).json({ error: 'Internal server error.' });
-      } finally {
+    } finally {
         client.release();
-      }
+    }
 });
-
 
 module.exports = router;
