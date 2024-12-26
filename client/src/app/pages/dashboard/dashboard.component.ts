@@ -10,13 +10,18 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { firstValueFrom } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorResponse
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { AddPasswordDialogComponent } from './addpassword/add-password-dialog.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { decode } from 'html-entities';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './html/dashboard.html',
   standalone: true,
-  styleUrl: './html/dashboard.scss',
+  styleUrls: ['./html/dashboard.scss'],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -25,15 +30,21 @@ import { HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorRes
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ]
 })
 export class DashboardComponent implements OnInit {
   passwordForm: FormGroup;
-  displayedColumns: string[] = ['sitename', 'siteurl'];
+  displayedColumns: string[] = ['icon', 'sitename', 'siteurl'];
   dataSource: any[] = [];
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private userService: UserService,
+    private dialog: MatDialog,
+    private sanitizer: DomSanitizer
+  ) {
     this.passwordForm = this.fb.group({
       sitename: [''],
       siteurl: [''],
@@ -57,23 +68,60 @@ export class DashboardComponent implements OnInit {
         this.dataSource = response.results;
       } else {
         console.log('JWT is not found in local storage.');
-        // Handle the absence of the token as needed
+        this.router.navigate(['/login']);
       }
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.status === 401) {
         console.error('Unauthorized access - possibly invalid token:', error.message);
-        // Handle unauthorized access, e.g., redirect to login
+        this.router.navigate(['/login']);
       } else {
         console.error('Error fetching user info:', error);
       }
     }
   }
 
-  addPassword(): void {
-    if (this.passwordForm.valid) {
-      const newPassword = this.passwordForm.value;
-      console.log('New Password:', newPassword);
-      // Add logic to handle the new password
+  getFaviconUrl(siteurl: string): string {
+    try {
+      const decodedHtml = decode(siteurl);
+      const decodedUrl = decodeURIComponent(decodedHtml);
+      
+      if (!decodedUrl) {
+        throw new Error('Empty URL');
+      }
+
+      const url = new URL(decodedUrl);
+      const faviconUrl = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`;
+      console.log('Favicon URL:', faviconUrl);
+      return faviconUrl;
+    } catch (error) {
+      console.error('Invalid URL:', siteurl);
+      return 'assets/default-favicon.ico';
     }
+  }
+
+  getDisplayUrl(siteurl: string): SafeHtml {
+    try {
+      const decodedUrl = decodeURIComponent(siteurl);
+      const sanitizedUrl = this.sanitizer.bypassSecurityTrustHtml(decodedUrl);
+      return sanitizedUrl;
+    } catch (error) {
+      console.error('Invalid URL:', siteurl);
+      return siteurl;
+    }
+  }
+
+  addPassword(event: Event): void {
+    event.preventDefault();
+    this.dialog.open(AddPasswordDialogComponent, {
+      width: '500px',
+      height: '500px'
+    });
+
+  
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 }

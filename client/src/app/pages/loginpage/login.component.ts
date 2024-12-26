@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider'; // Import MatDividerModule
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-  import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { PasswordResetRequestComponent } from './components/password-reset-request.component'; // Import ResetPasswordComponent

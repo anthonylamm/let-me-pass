@@ -1,38 +1,45 @@
 <header>
   <h1>Let Me Pass</h1>
-  <div class="search-container">
-    <div class="custom-search">
-      <input type="text" placeholder="Search passwords...">
-      <i class="material-icons">search</i>
+  <div class="header-controls">
+    <div class="search-container">
+      <div class="custom-search">
+        <input type="text" placeholder="Search passwords...">
+        <i class="material-icons">search</i>
+      </div>
     </div>
+    <button mat-raised-button color="primary" (click)="logout()" routerLink="/login">Logout</button>
   </div>
-  <button mat-raised-button color="primary" routerLink="/login">Logout</button>
 </header>
 
 <div class="table">
   
-
-     
-  <mat-card appearance="outlined">
-  <div class="card-header-content">
-    <h2>Your Passwords</h2>
-    <button mat-raised-button color="accent">Add</button>
-  </div>
+  <mat-card>
+    <div class="card-header-content">
+      <h2>The Vault</h2>
+      <button mat-raised-button color="accent" (click)="addPassword($event)">Add</button>
+    </div>
+    
     <mat-card-content>
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Icon Column -->
+        <ng-container matColumnDef="icon">
+          <td mat-cell *matCellDef="let element">
+            <img [src]="getFaviconUrl(element.siteurl)" alt="Icon" class="favicon">
+          </td>
+        </ng-container>
+
         <!-- Sitename Column -->
         <ng-container matColumnDef="sitename">
-          <th mat-header-cell *matHeaderCellDef> Website </th>
           <td mat-cell *matCellDef="let element"> {{element.sitename}} </td>
         </ng-container>
 
         <!-- Siteurl Column -->
         <ng-container matColumnDef="siteurl">
-          <th mat-header-cell *matHeaderCellDef> URL </th>
-          <td mat-cell *matCellDef="let element"> {{element.siteurl}} </td>
+          <td mat-cell *matCellDef="let element"> 
+            <a [href]="element.siteurl" [innerHTML]="getDisplayUrl(element.siteurl)"></a>
+          </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </mat-card-content>

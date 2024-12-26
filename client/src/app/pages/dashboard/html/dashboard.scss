@@ -1,38 +1,3 @@
-.table {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2rem;
-  }
-  
-  mat-card {
-    width: 60%; // Adjust width to fit the design
-    color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  mat-card-content {
-    padding: 1.5rem;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th {
-    text-align: left;
-    padding: 1rem;
-    background-color: #333; // Header background color
-    font-size: 1.1rem;
-  }
-  
-  td {
-    padding: 1rem;
-    border-top: 1px solid #444; // Row separator
-  }
-
 header {
   display: flex;
   justify-content: space-between;
@@ -46,47 +11,128 @@ header {
     font-size: 1.8rem;
     color: #000000;
   }
-}
 
-.search-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  max-width: 600px;
-  margin: 0 2rem;
-}
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    justify-content: flex-end;
+  }
 
-.custom-search {
-  position: relative;
-  width: 100%;
-  
-  input {
+  .search-container {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+  }
+
+  .custom-search {
+    position: relative;
     width: 100%;
-    height: 36px;
-    padding: 0 45px 0 20px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.2s;
-    
-    &:focus {
-      border-color: #1976d2;
+    max-width: 400px;
+
+    input {
+      width: 100%;
+      height: 36px;
+      padding: 0 45px 0 20px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+
+      &:focus {
+        border-color: #1976d2;
+      }
+    }
+
+    i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
     }
   }
-  
-  i {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
+
+  button[mat-raised-button] {
+    height: 36px;
+    line-height: 36px;
   }
 }
 
-button[mat-raised-button] {
-  height: 36px;
-  line-height: 36px;
+.table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+  padding: 1rem;
+
+  .card-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    background-color: rgba(255, 255, 255, 0.5); /* Transparent background */
+    padding: 1rem;
+    border-radius: 8px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    button[mat-raised-button] {
+      margin-left: auto;
+    }
+  }
+
+  mat-card {
+    width: 40%; // Adjust width to fit the design
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 1rem;
+
+    mat-card-content {
+      padding: 1rem;
+    }
+  }
+
+  .favicon {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+  }
+}
+
+mat-card {
+  width: 40%; // Adjust width to fit the design
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+mat-card-content {
+  padding: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 1rem;
+  background-color: #333; // Header background color
+  font-size: 1.1rem;
+}
+
+td {
+  padding: 1rem;
+  border-top: 1px solid #444; // Row separator
 }
 
 @media (max-width: 768px) {
@@ -100,15 +146,16 @@ button[mat-raised-button] {
     margin: 1rem 0;
   }
 }
+
 .card-header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    
-    h2 {
-      color: #050404;
-      margin: 0;
-      font-size: 1.5rem;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  
+  h2 {
+    color: #050404;
+    margin: 0;
+    font-size: 1.5rem;
   }
+}
