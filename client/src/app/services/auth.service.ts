@@ -14,7 +14,7 @@ export class AuthService {
     return this.http.post(`${this.backendUrl}/public/login`, {username, password});
   }
   setToken(token: string): void {
-    localStorage.setItem('authToken', token); // Use sessionStorage for session-based storage
+    localStorage.setItem('token', token); // Use sessionStorage for session-based storage
   }
   signup(username: string, email: string, password: string){
     return this.http.post(`${this.backendUrl}/public/register`, {username, email, password});

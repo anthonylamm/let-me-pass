@@ -10,7 +10,7 @@ router.use(authenticateToken);
 router.post('/add-password',[
     body('sitename').trim().escape(),
     body('username').trim().escape(),
-    body('siturl').trim().escape(),
+    body('siteurl').trim().escape(),
     body('password').trim().escape(),
     body('notes').trim().escape()
 ], async (req, res) => {
@@ -49,7 +49,7 @@ router.get('/user-information', async(req, res) => {
 
     try {
         const results = await client.query(`
-            SELECT password_id, sitename, siteurl, username, encryptedPassword, notes
+            SELECT password_id, sitename, siteurl
             FROM passwordvault
             WHERE user_id = $1
         `, [user_id]
@@ -84,6 +84,27 @@ router.delete('/delete-password', async(req, res) => {
         client.release();
     }
 })
+router.get('/get-password', async (req, res) => {
+    const { searchField } = req.query; // Use req.query for GET requests
+    const user_id = req.user.user_id;
+
+    const client = await pool.connect();
+    try {
+        const results = await client.query(`
+            SELECT * FROM passwordvault
+            WHERE (sitename ILIKE $1 OR siteurl ILIKE $1) AND user_id = $2
+        `, [`%${searchField}%`, user_id]);
+
+        console.log('Query Results:', results.rows);
+
+        res.status(200).json({ message: 'Query successful', results: results.rows });
+    } catch (error) {
+        console.error('Error searching for passwords:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        client.release();
+    }
+});
 
 router.put('/modify-data', [
     body('password_id').isInt(),
