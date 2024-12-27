@@ -120,11 +120,22 @@ export class DashboardComponent implements OnInit {
   
   }
   onRowClicked(row: any): void {
-    console.log(row)
-    
+    try {
+        
+        const siteUrl = row.siteurl.startsWith('http') ? row.siteurl : `https://${row.siteurl}`;
+        const url = new URL(siteUrl);
+        let hostname = url.hostname; // e.g., 'www.facebook.com'
 
-
-  }
+        // removes 'www.' prefix if present
+        if (hostname.startsWith('www.')) {
+            hostname = hostname.substring(4);
+        }
+        // Navigate to '/dashboard/sitename/
+        this.router.navigate(['/dashboard', hostname]);
+    } catch (error) {
+        console.error('Invalid URL:', row.siteurl);
+    }
+}
 
   logout(): void {
     localStorage.removeItem('token');

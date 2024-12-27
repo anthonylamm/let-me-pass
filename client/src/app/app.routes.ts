@@ -12,7 +12,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   {path: 'reset-password', component: ResetPasswordComponent},
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'dashboard/:sitename/:tld', component: PasswordViewComponent},
+  { path: 'dashboard/:sitename', component: PasswordViewComponent},
   { path: '**', redirectTo: '' },
 
 
