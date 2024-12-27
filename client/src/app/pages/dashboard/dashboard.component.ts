@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
+import { PasswordService } from '../../services/password.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -44,6 +45,7 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog,
     private sanitizer: DomSanitizer,
+    private passwordService: PasswordService
   ) {
     this.passwordForm = this.fb.group({
       sitename: [''],
@@ -121,7 +123,7 @@ export class DashboardComponent implements OnInit {
   }
   onRowClicked(row: any): void {
     try {
-        
+        console.log(row)
         const siteUrl = row.siteurl.startsWith('http') ? row.siteurl : `https://${row.siteurl}`;
         const url = new URL(siteUrl);
         let hostname = url.hostname; // e.g., 'www.facebook.com'
@@ -130,6 +132,7 @@ export class DashboardComponent implements OnInit {
         if (hostname.startsWith('www.')) {
             hostname = hostname.substring(4);
         }
+        this.passwordService.setSelectedPasswordData(row);
         // Navigate to '/dashboard/sitename/
         this.router.navigate(['/dashboard', hostname]);
     } catch (error) {
