@@ -5,14 +5,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../../services/user.service';
+import { UserService } from '../../services/user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-add-password-dialog',
 
-  templateUrl: '../html/add-password-dialog.html',
+  templateUrl: './html/add-password-dialog.html',
   imports: [
     MatFormFieldModule,
     MatInputModule,

@@ -63,6 +63,28 @@ router.get('/user-information', async(req, res) => {
         client.release();
     }
 });
+
+router.post('/user-password', async(req,res) =>{
+    const user_id = req.user.user_id;
+    const {password_id} = req.body;
+
+    const client = await pool.connect();
+    try{
+        const results = await client.query(`
+            SELECT *
+            FROM passwordvault
+            WHERE user_id = $1 AND password_id = $2
+
+        `, [user_id, password_id]
+        );
+        res.status(200).json({results: results.rows});
+    }catch(error){
+        console.error(`Error with getting user's password `, error);
+        res.status(500).json({error: 'Internal Server Error'});
+    }finally{
+        client.release();
+    }
+})
 router.delete('/delete-password', async(req, res) => {
     const {password_id} = req.body;
     const user_id = req.user.user_id;

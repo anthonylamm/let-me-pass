@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { AddPasswordDialogComponent } from './addpassword/add-password-dialog.component';
+import { AddPasswordDialogComponent } from './add-password-dialog.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { decode } from 'html-entities';
 
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private dialog: MatDialog,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
   ) {
     this.passwordForm = this.fb.group({
       sitename: [''],
@@ -118,6 +118,12 @@ export class DashboardComponent implements OnInit {
     });
 
   
+  }
+  onRowClicked(row: any): void {
+    console.log(row)
+    
+
+
   }
 
   logout(): void {

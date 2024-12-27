@@ -61,12 +61,30 @@ header {
   }
 }
 
+.header-title, .add-button {
+  display: flex;
+  align-items: center;
+}
+
+.header-title i, .add-button i {
+  margin-left: 0.5rem; // Space between text and icon
+  font-size: 1.2rem;    // Adjust icon size to match text
+  vertical-align: middle;
+}
+
+.add-button {
+  .material-icons {
+    font-size: 1rem; // Ensure button icon size matches the button text
+  }
+}
+
 .table {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 2rem;
   padding: 1rem;
+  width: 100%; // Ensure the container takes full width
 
   .card-header-content {
     display: flex;
@@ -89,7 +107,8 @@ header {
   }
 
   mat-card {
-    width: 40%; // Adjust width to fit the design
+    width: 100%; // Allow mat-card to take full width
+    max-width: 1000px; // Optional: set a max-width for larger screens
     color: white;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -97,6 +116,7 @@ header {
 
     mat-card-content {
       padding: 1rem;
+      overflow-x: auto; // Enable horizontal scroll if content overflows
     }
   }
 
@@ -105,10 +125,36 @@ header {
     height: 22px;
     border-radius: 4px;
   }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; // Ensure table has a minimum width
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #ddd; // Lines between rows
+    }
+
+    /* Optional: Add hover effect for better UX */
+    tr.clickable-row:hover {
+      background-color: #f1f1f1;
+    }
+
+    a {
+      color: #1976d2;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 mat-card {
-  width: 40%; // Adjust width to fit the design
+  width: 100%; // Ensure mat-card takes full width
+  max-width: 1000px; // Optional: set a max-width for larger screens
   color: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -118,21 +164,22 @@ mat-card-content {
   padding: 1.5rem;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
 th {
-  text-align: left;
-  padding: 1rem;
-  background-color: #333; // Header background color
-  font-size: 1.1rem;
+  /* Header styles removed as headers are deleted */
 }
 
-td {
-  padding: 1rem;
-  border-top: 1px solid #444; // Row separator
+@media (max-width: 1024px) {
+  .table mat-card {
+    max-width: 90%;
+  }
+
+  .card-header-content h2 {
+    font-size: 1.3rem;
+  }
+
+  table {
+    min-width: 500px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -141,21 +188,66 @@ td {
     gap: 1rem;
     padding: 1rem;
   }
-  
+
   .search-container {
     margin: 1rem 0;
   }
+
+  .table {
+    margin: 1rem;
+    padding: 0.5rem;
+
+    table {
+      min-width: 400px;
+    }
+
+    mat-card-content {
+      padding: 0.5rem;
+    }
+  }
+
+  .card-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+
+    button[mat-raised-button] {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .header-title i, .add-button i {
+    font-size: 1rem;
+  }
+
+  .add-button {
+    font-size: 0.9rem;
+  }
 }
 
-.card-header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  
-  h2 {
-    color: #050404;
-    margin: 0;
+@media (max-width: 480px) {
+  header h1 {
     font-size: 1.5rem;
+  }
+
+  .custom-search input {
+    font-size: 14px;
+  }
+
+  table {
+    min-width: 300px;
+  }
+
+  .favicon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-title i, .add-button i {
+    font-size: 0.8rem;
+  }
+
+  .add-button {
+    font-size: 0.8rem;
   }
 }
