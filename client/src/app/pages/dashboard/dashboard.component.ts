@@ -64,12 +64,9 @@ export class DashboardComponent implements OnInit {
 
       // Check if the token exists
       if (token) {
-        console.log('JWT is present in local storage:', token);
         const response: any = await firstValueFrom(this.userService.getUserInfo());
-        console.log('displaying user password info...', response);
         this.dataSource = response.results;
       } else {
-        console.log('JWT is not found in local storage.');
         this.router.navigate(['/login']);
       }
     } catch (error) {
@@ -93,7 +90,7 @@ export class DashboardComponent implements OnInit {
 
       const url = new URL(decodedUrl);
       const faviconUrl = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`;
-      console.log('Favicon URL:', faviconUrl);
+
       return faviconUrl;
     } catch (error) {
       console.error('Invalid URL:', siteurl);
