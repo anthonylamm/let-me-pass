@@ -19,8 +19,22 @@ export class UserService {
   }
 
   getUserInfo(){
-    // Log the request
-    console.log('Making request to:', `${this.backendUrl}/user/user-information`);
+    
     return this.http.get(`${this.backendUrl}/user/user-information`);
+  }
+
+  deleteUserPassword(password_id: number){
+    return this.http.delete(`${this.backendUrl}/user/delete-password`, { body: { password_id } })
+  }
+
+  modifyUserLogin(
+    password_id: number,
+    sitename: string, 
+    username: string, 
+    siteurl: string,  
+    password: string, 
+    notes: string
+  ){
+    return this.http.put(`${this.backendUrl}/user/modify-data`, {password_id, sitename, username, siteurl, password, notes} )
   }
 }

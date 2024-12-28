@@ -5,6 +5,7 @@ const pool = require('../utils/db')
 const argon2 = require('argon2');
 const { body, validationResult } = require('express-validator');
 
+
 router.use(authenticateToken);
 
 router.post('/add-password',[
@@ -23,7 +24,7 @@ router.post('/add-password',[
     const client = await pool.connect();
     try {
         
-        const encryptedPassword = await argon2.hash(password);
+        con
 
         console.log('Inserting:', { user_id, sitename, siteurl, username, encryptedPassword, notes });
 
@@ -31,7 +32,7 @@ router.post('/add-password',[
             INSERT INTO passwordvault 
             (user_id, sitename, siteurl, username, encryptedPassword, notes)
             VALUES ($1, $2, $3, $4, $5, $6)
-        `, [user_id, sitename, siteurl, username, encryptedPassword, notes]);
+        `, [user_id, sitename, siteurl, username, password, notes]);
 
         res.status(200).json({ message: "Password successfully added to your vault" });
     } catch (error) {
@@ -129,32 +130,34 @@ router.get('/get-password', async (req, res) => {
 });
 
 router.put('/modify-data', [
-    body('password_id').isInt(),
-    body('attribute').trim().escape(),
-    body('collum').trim().escape()
+    body('sitename').trim().escape(),
+    body('username').trim().escape(),
+    body('siteurl').trim().escape(),
+    body('password').trim().escape(),
+    body('notes').trim().escape()
 ], async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() });
     }
-    const { password_id, attribute, collum } = req.body;
     const user_id = req.user.user_id;
+    const { password_id, sitename, username, siteurl, password, notes } = req.body;
     const client = await pool.connect();
     try {
-        let updatedAttribute = attribute;
-        if (collum === 'encryptedpassword') {
-            updatedAttribute = await argon2.hash(attribute);
-        }
-
+        
         await client.query(`
-            UPDATE passwordvault
-            SET ${collum} = $1
-            WHERE password_id = $2 AND user_id = $3
-        `, [updatedAttribute, password_id, user_id]);
-
-        res.status(200).json({ message: "Password successfully updated in your vault" });
+             UPDATE passwordvault
+                SET  
+                    sitename = $1, 
+                    siteurl = $2, 
+                    username = $3, 
+                    encryptedPassword = $4, 
+                    notes = $5
+                WHERE password_id = $6 AND user_id =$7
+            `, [ sitename, siteurl, username, password, notes, password_id, user_id]);
+        res.status(200).json({ message: "Password successfully added to your vault" });
     } catch (error) {
-        console.error('Error updating password:', error);
+        console.error('Error adding password:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     } finally {
         client.release();
