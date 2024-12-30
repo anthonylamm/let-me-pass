@@ -114,7 +114,6 @@ export class LoginComponent {
     }
     this.authService.login(this.username, this.password).subscribe({
       next: (response: any) => {
-        console.log('Login response:', response); // For testing; remove in production
         this.authService.setToken(response.token);
         this.snackBar.open('Login successful!', 'Close', {
           duration: 3000,

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,21 +7,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-password-dialog',
-
   templateUrl: './html/add-password-dialog.html',
   imports: [
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     ReactiveFormsModule,
-    MatSnackBarModule
-  ]
+    MatSnackBarModule,
+    MatIconModule
+  ],
+  standalone: true, // Ensure this line is present
+  styleUrls: ['./styles/add-password.scss'],
+  encapsulation: ViewEncapsulation.None, // Ensure this line is appropriately set
 })
 export class AddPasswordDialogComponent {
   passwordForm: FormGroup;
+  hidePassword: boolean = true; // For password visibility toggle
 
   constructor(
     private fb: FormBuilder,
@@ -30,7 +35,6 @@ export class AddPasswordDialogComponent {
     private snackBar: MatSnackBar,
   ) {
     this.passwordForm = this.fb.group({
-      sitename: ['', Validators.required],
       siteurl: ['', [Validators.required, Validators.pattern('https?://.+')]],
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -56,7 +60,9 @@ export class AddPasswordDialogComponent {
       });
     }
   }
-
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
+  }
   onCancel(): void {
     this.dialogRef.close();
   }

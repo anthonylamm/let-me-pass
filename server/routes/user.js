@@ -23,10 +23,6 @@ router.post('/add-password',[
     const { sitename, username, siteurl, password, notes } = req.body;
     const client = await pool.connect();
     try {
-        
-        con
-
-        console.log('Inserting:', { user_id, sitename, siteurl, username, encryptedPassword, notes });
 
         await client.query(`
             INSERT INTO passwordvault 

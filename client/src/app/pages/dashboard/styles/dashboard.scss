@@ -29,7 +29,7 @@ header {
   .custom-search {
     position: relative;
     width: 100%;
-    max-width: 400px;
+    max-width: 700px;
 
     input {
       width: 100%;
@@ -108,7 +108,7 @@ header {
 
   mat-card {
     width: 100%; // Allow mat-card to take full width
-    max-width: 1000px; // Optional: set a max-width for larger screens
+    max-width: 800px; // Optional: set a max-width for larger screens
     color: white;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -129,7 +129,7 @@ header {
   table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px; // Ensure table has a minimum width
+    min-width: 100px; // Ensure table has a minimum width
 
     td {
       padding: 1rem;
@@ -149,12 +149,25 @@ header {
         text-decoration: underline;
       }
     }
+    .navigate-cell {
+      text-align: right;
+      padding-right: 1rem;
+      color: #5e5e5e9c;
+
+      button {
+        color: #1976d2;
+
+        &:hover {
+          color: #005bb5;
+        }
+      }
+    }
   }
 }
 
 mat-card {
   width: 100%; // Ensure mat-card takes full width
-  max-width: 1000px; // Optional: set a max-width for larger screens
+  max-width: 800px; // Optional: set a max-width for larger screens
   color: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -246,4 +259,10 @@ mat-card-content {
   .add-button {
     font-size: 0.8rem;
   }
+}
+.custom-dialog-container {
+  /* Your custom styles */
+  background-color: #000000;
+  border-radius: 8px;
+  padding: 20px;
 }

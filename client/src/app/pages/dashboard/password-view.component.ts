@@ -12,12 +12,13 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ModifyPassword } from './modify-password.component'
 import { decode } from 'html-entities';
+import { ClipboardModule, Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-password-view',
   templateUrl: './html/password-view.html',
   standalone: true,
-  styleUrls: ['./html/password-view.scss'],
+  styleUrls: ['./styles/password-view.scss'],
   imports: [
     MatCardModule,
     MatFormFieldModule,
@@ -26,7 +27,8 @@ import { decode } from 'html-entities';
     MatInputModule,
     MatButtonModule, // Included in imports
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    ClipboardModule
   ]
 })
 export class PasswordViewComponent implements OnInit {
@@ -44,7 +46,8 @@ export class PasswordViewComponent implements OnInit {
     private passwordService: PasswordService,
     private userService: UserService,
     private snackBar : MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private clipboard: Clipboard
   ){
     this.passwordForm = this.fb.group({
       username: [{ value: '', disabled: true }, Validators.required],
@@ -65,7 +68,6 @@ export class PasswordViewComponent implements OnInit {
     } else {
       this.userService.getUserPassword(this.passwordData.password_id).subscribe({
         next: (response: any) => {
-          console.log(response)
 
           if (response.results && response.results.length > 0) {
             const passwordDetails = response.results[0];
@@ -144,13 +146,19 @@ export class PasswordViewComponent implements OnInit {
   enableEdit(event: Event): void {
     event.preventDefault();
     this.dialog.open(ModifyPassword, {
-          width: '500px',
-          height: '500px',
+          width: '600px',
+          height: '600px',
           data: this.originalPasswordData
         });
 
   }
+  copyToClipboard(data: string): void {
+    this.clipboard.copy(data);
+    this.snackBar.open('Copied to clipboard!', 'Close', {
+      duration: 2000,
+      verticalPosition: 'bottom',
+    });
+  }
 
-  
  
 }

@@ -22,7 +22,7 @@ import { decode } from 'html-entities';
   selector: 'app-dashboard',
   templateUrl: './html/dashboard.html',
   standalone: true,
-  styleUrls: ['./html/dashboard.scss'],
+  styleUrls: ['./styles/dashboard.scss'],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -36,7 +36,7 @@ import { decode } from 'html-entities';
 })
 export class DashboardComponent implements OnInit {
   passwordForm: FormGroup;
-  displayedColumns: string[] = ['icon', 'sitename', 'siteurl'];
+  displayedColumns: string[] = ['icon', 'siteurl', 'navigate'];
   dataSource: any[] = [];
 
   constructor(
@@ -48,9 +48,10 @@ export class DashboardComponent implements OnInit {
     private passwordService: PasswordService
   ) {
     this.passwordForm = this.fb.group({
-      sitename: [''],
+      //sitename: [''],
+      
       siteurl: [''],
-      notes: ['']
+      notes: [''],
     });
   }
 
@@ -112,15 +113,15 @@ export class DashboardComponent implements OnInit {
   addPassword(event: Event): void {
     event.preventDefault();
     this.dialog.open(AddPasswordDialogComponent, {
-      width: '500px',
-      height: '500px'
+      width: '600px',
+      height: '600px',
+
     });
 
   
   }
   onRowClicked(row: any): void {
     try {
-        console.log(row)
         const siteUrl = row.siteurl.startsWith('http') ? row.siteurl : `https://${row.siteurl}`;
         const url = new URL(siteUrl);
         let hostname = url.hostname; // e.g., 'www.facebook.com'
