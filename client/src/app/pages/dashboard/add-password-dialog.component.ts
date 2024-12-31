@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { CryptoService } from '../../services/crypto.service';
 
 @Component({
   selector: 'app-add-password-dialog',
@@ -33,6 +34,7 @@ export class AddPasswordDialogComponent {
     private dialogRef: MatDialogRef<AddPasswordDialogComponent>,
     private userService: UserService,
     private snackBar: MatSnackBar,
+    private cryptoService : CryptoService,
   ) {
     this.passwordForm = this.fb.group({
       siteurl: ['', [Validators.required, Validators.pattern('https?://.+')]],
@@ -42,22 +44,44 @@ export class AddPasswordDialogComponent {
     });
   }
 
-  onSubmit(): void {
+  
+  async onSubmit(): Promise<void> {
     if (this.passwordForm.valid) {
       const { sitename, siteurl, username, password, notes } = this.passwordForm.value;
-      this.userService.addPassword(sitename, username, siteurl, password, notes).subscribe({
-        next: (response: any) => {
-          this.snackBar.open(response.message, 'Close', {
-            duration: 3000,
-          });
-          this.dialogRef.close(this.passwordForm.value);
-        },
-        error: (err) => {
-          this.snackBar.open('Error adding password', 'Close', {
-            duration: 3000,
-          });
-        }
-      });
+
+      // Check if encryption key is derived
+      if (!this.cryptoService.isKeyDerived()) {
+        this.snackBar.open('Encryption key not available. Please log in again.', 'Close', {
+          duration: 3000,
+        });
+        return;
+      }
+
+      try {
+        // Encrypt the password using CryptoService
+        const encryptedPassword = await this.cryptoService.encryptData(password);
+        console.log('Encrypted Password:', encryptedPassword); // Optional: For debugging
+
+        // Send the encrypted password to the server
+        this.userService.addPassword(sitename, username, siteurl, encryptedPassword, notes).subscribe({
+          next: (response: any) => {
+            this.snackBar.open(response.message, 'Close', {
+              duration: 3000,
+            });
+            this.dialogRef.close(this.passwordForm.value);
+          },
+          error: (err) => {
+            this.snackBar.open('Error adding password', 'Close', {
+              duration: 3000,
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Encryption error:', error);
+        this.snackBar.open('Error encrypting password', 'Close', {
+          duration: 3000,
+        });
+      }
     }
   }
   togglePasswordVisibility(): void {

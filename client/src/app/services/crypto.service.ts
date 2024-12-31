@@ -5,18 +5,30 @@ import { Injectable } from '@angular/core';
 })
 export class CryptoService {
   private key: CryptoKey | null = null;
-  private salt: string = 'unique-salt'; // Ideally, generate a unique salt per user and store it securely
+  private salt: string = ''; // To be set upon user login
 
   constructor() { }
 
   /**
-   * Derive an AES-GCM encryption key from the master password using PBKDF2
+   * Set the salt value retrieved from the server
+   * @param salt - Base64 encoded salt string
+   */
+  setSalt(salt: string): void {
+    this.salt = atob(salt); // Decode from Base64
+  }
+
+  /**
+   * Derive an AES-GCM encryption key from the user's master password using PBKDF2
    * @param masterPassword - The user's master password
    */
   async deriveKey(masterPassword: string): Promise<void> {
+    if (!this.salt) {
+      throw new Error('Salt is not set. Cannot derive key.');
+    }
+
     const encoder = new TextEncoder();
     const passphraseKey = encoder.encode(masterPassword);
-    const salt = encoder.encode(this.salt);
+    const saltBytes = encoder.encode(this.salt);
 
     // Import the passphrase as a key material
     const keyMaterial = await window.crypto.subtle.importKey(
@@ -31,7 +43,7 @@ export class CryptoService {
     this.key = await window.crypto.subtle.deriveKey(
       {
         name: 'PBKDF2',
-        salt: salt,
+        salt: saltBytes,
         iterations: 100000, // Higher iterations increase security
         hash: 'SHA-256'
       },
@@ -40,6 +52,8 @@ export class CryptoService {
       false,
       ['encrypt', 'decrypt']
     );
+
+    console.log('Encryption key derived and stored in memory.');
   }
 
   /**
@@ -84,26 +98,29 @@ export class CryptoService {
       throw new Error('Encryption key not derived.');
     }
 
-    try {
-      const combined = Uint8Array.from(atob(data), c => c.charCodeAt(0));
-      const iv = combined.slice(0, 12);
-      const encryptedData = combined.slice(12);
+    const combined = Uint8Array.from(atob(data), c => c.charCodeAt(0));
+    const iv = combined.slice(0, 12);
+    const encryptedData = combined.slice(12);
 
-      const decrypted = await window.crypto.subtle.decrypt(
-        {
-          name: 'AES-GCM',
-          iv: iv
-        },
-        this.key,
-        encryptedData
-      );
+    const decrypted = await window.crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv
+      },
+      this.key,
+      encryptedData
+    );
 
-      const decoder = new TextDecoder();
-      return decoder.decode(decrypted);
-    } catch (error) {
-      console.error('Decryption failed:', error);
-      throw new Error('Decryption failed. The data might be corrupted or the key is incorrect.');
-    }
+    const decoder = new TextDecoder();
+    return decoder.decode(decrypted);
+  }
+
+  /**
+   * Check if the encryption key has been derived
+   * @returns boolean indicating the presence of the key
+   */
+  isKeyDerived(): boolean {
+    return this.key !== null;
   }
 
   /**
@@ -111,12 +128,6 @@ export class CryptoService {
    */
   clearKey(): void {
     this.key = null;
-  }
-
-  /**
-   * Check if the key has been derived
-   */
-  isKeyDerived(): boolean {
-    return this.key !== null;
+    console.log('Encryption key cleared from memory.');
   }
 }

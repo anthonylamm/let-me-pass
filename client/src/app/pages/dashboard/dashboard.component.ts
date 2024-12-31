@@ -15,10 +15,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AddPasswordDialogComponent } from './add-password-dialog.component';
+import { PasswordGeneratorComponent } from './password-generator.component';
+
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { decode } from 'html-entities';
 import { CryptoService } from '../../services/crypto.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatMenuModule} from '@angular/material/menu';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,6 +38,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
+    MatMenuModule
     
   ]
 })
@@ -162,4 +166,15 @@ applyFilter(filterValue: string): void {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
+ 
+  navPass(event: Event): void{
+
+    event.preventDefault();
+    this.dialog.open(PasswordGeneratorComponent, {
+      width: '600px',
+      height: '600px',
+
+    });
+  }
+  
 }

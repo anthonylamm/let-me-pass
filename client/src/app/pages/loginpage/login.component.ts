@@ -11,11 +11,13 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { PasswordResetRequestComponent } from './components/password-reset-request.component'; // Import ResetPasswordComponent
 import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
-import {MatIcon} from '@angular/material/icon';
+import { MatIcon } from '@angular/material/icon';
+import { CryptoService } from '../../services/crypto.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
+  templateUrl: './login.html',
   styleUrls: ['./signup.component.scss'],
   imports: [
     MatCardModule,
@@ -28,62 +30,12 @@ import {MatIcon} from '@angular/material/icon';
     FormsModule,
     MatIcon,
   ],
-  template: `
-    <mat-card class="login-card">
-      <h2>Welcome back!</h2>
-      <form (ngSubmit)="onLogin()">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Username</mat-label>
-          <input matInput [(ngModel)]="username" name="username" required />
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required />
-          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
-            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-        </mat-form-field>
-
-        <div class="terms-container">
-          <a href="#" (click)="openRecoverPass($event)">Forgot password?</a>
-        </div>
-
-        <div class="buttons-container">
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            class="login-button"
-            [disabled]="!isFormValid()"
-          >
-            Continue
-          </button>
-
-          <div class="divider-container">
-            <mat-divider></mat-divider>
-            <span class="divider-text">OR</span>
-            <mat-divider></mat-divider>
-          </div>
-
-          <button
-            mat-raised-button 
-            color="accent"
-            type="button"
-            (click)="onSignup()"
-            class="signup-button"
-          >
-            Signup
-          </button>
-        </div>
-      </form>
-    </mat-card>
-  `,
+  
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  hidePassword: boolean = true; // Property to toggle password visibility
+  hidePassword: boolean = true; 
 
  
 
@@ -91,20 +43,19 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cryptoService: CryptoService,
   ) {}
 
-  // Method to check if the form is valid
   isFormValid(): boolean {
     return this.username.trim() !== '' && this.password.trim() !== '';
   }
 
-  // Method to toggle password visibility
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;
   }
 
-  onLogin() {
+  async onLogin(): Promise<void> {
     if (!this.username || !this.password) {
       this.snackBar.open('Please enter both username and password.', 'Close', {
         duration: 3000,
@@ -112,8 +63,16 @@ export class LoginComponent {
       return;
     }
     this.authService.login(this.username, this.password).subscribe({
-      next: (response: any) => {
+      next: async (response: any) => {
         this.authService.setToken(response.token);
+        if (response.token && response.salt) {
+          // Store the authentication token
+          this.authService.setToken(response.token);
+        }  
+        this.cryptoService.setSalt(response.salt);
+        // Derive the encryption key using the master password
+        await this.cryptoService.deriveKey(this.password);
+
         this.snackBar.open('Login successful!', 'Close', {
           duration: 3000,
         });

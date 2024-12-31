@@ -13,6 +13,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ModifyPassword } from './modify-password.component'
 import { decode } from 'html-entities';
 import { ClipboardModule, Clipboard } from '@angular/cdk/clipboard';
+import { CryptoService } from '../../services/crypto.service';
 
 @Component({
   selector: 'app-password-view',
@@ -47,7 +48,8 @@ export class PasswordViewComponent implements OnInit {
     private userService: UserService,
     private snackBar : MatSnackBar,
     private dialog: MatDialog,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private cryptoService: CryptoService,
   ){
     this.passwordForm = this.fb.group({
       username: [{ value: '', disabled: true }, Validators.required],
@@ -67,20 +69,40 @@ export class PasswordViewComponent implements OnInit {
       this.router.navigate(['/dashboard']);
     } else {
       this.userService.getUserPassword(this.passwordData.password_id).subscribe({
-        next: (response: any) => {
+        next: async(response: any) => {
 
           if (response.results && response.results.length > 0) {
             const passwordDetails = response.results[0];
 
             this.originalPasswordData = passwordDetails
             
-            this.passwordForm.patchValue({
-              username: passwordDetails.username,
-              password: passwordDetails.encryptedpassword, 
-              siteurl: decode(passwordDetails.siteurl),
-              sitename: passwordDetails.sitename,
-              notes: passwordDetails.notes
-            });
+              try {
+              // Check if encryption key is derived
+              if (!this.cryptoService.isKeyDerived()) {
+                this.snackBar.open('Encryption key expired. Please log in again.', 'Close', {
+                  duration: 3000,
+                });
+                this.router.navigate(['/login']);
+
+                return;
+              }
+              // Decrypt the password using CryptoService
+              const decryptedPassword = await this.cryptoService.decryptData(passwordDetails.encryptedpassword);
+
+              // Patch the form with decrypted password and other details
+              this.passwordForm.patchValue({
+                username: passwordDetails.username,
+                password: decryptedPassword, 
+                siteurl: this.decode(passwordDetails.siteurl),
+                sitename: passwordDetails.sitename,
+                notes: passwordDetails.notes
+              });
+            } catch (decryptionError) {
+              console.error('Decryption error:', decryptionError);
+              this.snackBar.open('Error decrypting password. Please try again.', 'Close', {
+                duration: 3000,
+              });
+            }
           }
         },
         error:(error: any) => {

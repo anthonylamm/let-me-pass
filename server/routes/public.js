@@ -5,6 +5,7 @@ const pool = require('../utils/db'); // Adjust the path as needed
 const argon2 = require('argon2');
 const { sendAuthEmail } = require('../utils/mailer'); // sendAuthEmail function
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto'); // Ensure crypto is imported
 
 
 router.post('/register', [
@@ -30,8 +31,9 @@ router.post('/register', [
             return res.status(400).json({ errors: [{ msg: 'Email or username already exists', param: 'username/email' }] });        }
 
         const hashedPassword = await argon2.hash(password);//algorithm to hash password
+        const salt = crypto.randomBytes(16).toString('base64');
 
-        const result = await client.query('INSERT INTO users (username, email, password, email_verified) VALUES ($1, $2, $3, $4) RETURNING *', [username, email, hashedPassword, false]);//inserting user into database
+        const result = await client.query('INSERT INTO users (username, email, password, salt, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, email, hashedPassword, salt, false]);//inserting user into database
         console.log(result.rows[0]);
 
         const token = jwt.sign({ username: result.rows[0].username }, process.env.JWT_SECRET, { expiresIn: '3h' });
@@ -98,6 +100,7 @@ router.post('/login', [
 
         if (!user) //checking to see if user exists
             return res.status(400).json({ error: 'Invalid username or password' });
+
         if (!user.email_verified) {
             console.log(user.email_verified);
             return res.status(400).json({ error: 'Please verify your email' });
@@ -106,12 +109,12 @@ router.post('/login', [
         if (!passwordMatch)
             return res.status(400).json({ error: 'Invalid username or password' });
 
-        jwt.sign({ user_id: user.user_id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '3h' }, (err, token) => { //creating a token to be used for authentication
+        jwt.sign({ user_id: user.user_id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => { //creating a token to be used for authentication
             if (err) {
                 console.error(err);
                 return res.status(500).json({ error: 'Internal server error' });
             }
-            res.json({ message: "login success", token: token });
+            res.json({ message: "login success", token: token, salt: user.salt });
         });
 
     } catch (error) {
