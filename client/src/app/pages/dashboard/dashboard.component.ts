@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,6 +17,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddPasswordDialogComponent } from './add-password-dialog.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { decode } from 'html-entities';
+import { CryptoService } from '../../services/crypto.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,12 +34,14 @@ import { decode } from 'html-entities';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSnackBarModule,
+    
   ]
 })
 export class DashboardComponent implements OnInit {
   passwordForm: FormGroup;
   displayedColumns: string[] = ['icon', 'siteurl', 'navigate'];
-  dataSource: any[] = [];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>(); // Changed to MatTableDataSource
 
   constructor(
     private router: Router,
@@ -45,14 +49,22 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog,
     private sanitizer: DomSanitizer,
-    private passwordService: PasswordService
+    private passwordService: PasswordService,
+    private cryptoService: CryptoService,
+    private snackBar: MatSnackBar
+    
+    
   ) {
     this.passwordForm = this.fb.group({
-      //sitename: [''],
-      
       siteurl: [''],
       notes: [''],
     });
+
+    // Customize filter predicate to include 'sitename' and 'siteurl'
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const dataStr = `${data.sitename} ${data.siteurl}`.toLowerCase();
+      return dataStr.includes(filter);
+    };
   }
 
   ngOnInit(): void {
@@ -66,7 +78,7 @@ export class DashboardComponent implements OnInit {
       // Check if the token exists
       if (token) {
         const response: any = await firstValueFrom(this.userService.getUserInfo());
-        this.dataSource = response.results;
+        this.dataSource.data = response.results; // Assign data to MatTableDataSource
       } else {
         this.router.navigate(['/login']);
       }
@@ -102,8 +114,7 @@ export class DashboardComponent implements OnInit {
   getDisplayUrl(siteurl: string): SafeHtml {
     try {
       const decodedUrl = decodeURIComponent(siteurl);
-      const sanitizedUrl = this.sanitizer.bypassSecurityTrustHtml(decodedUrl);
-      return sanitizedUrl;
+      return decodedUrl;
     } catch (error) {
       console.error('Invalid URL:', siteurl);
       return siteurl;
@@ -138,6 +149,15 @@ export class DashboardComponent implements OnInit {
     }
 }
 
+
+applyFilter(filterValue: string): void {
+  const trimmedValue = filterValue.trim().toLowerCase(); // Remove whitespace and convert to lowercase
+  this.dataSource.filter = trimmedValue;
+
+  if (this.dataSource.paginator) {
+    this.dataSource.paginator.firstPage();
+  }
+}
   logout(): void {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);

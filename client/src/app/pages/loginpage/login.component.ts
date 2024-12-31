@@ -105,7 +105,6 @@ export class LoginComponent {
   }
 
   onLogin() {
-    console.log('Login attempt:', this.username, this.password);
     if (!this.username || !this.password) {
       this.snackBar.open('Please enter both username and password.', 'Close', {
         duration: 3000,

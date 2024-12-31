@@ -81,6 +81,5 @@ export class ModifyPassword {
   }
   onCancel(): void {
     this.dialogRef.close();
-    console.log(this.data.username)
   }
 }
