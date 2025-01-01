@@ -5,7 +5,7 @@ import { SignupComponent } from './pages/loginpage/signup.component';
 import { ResetPasswordComponent } from './pages/loginpage/components/reset-password.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PasswordViewComponent } from './pages/dashboard/password-view.component';
-import { EmailVerifiedComponent } from './pages/email-verified/email-verified.component';
+import { EmailVerifiedComponent } from './email-verified/email-verified.component';
 
 export const routes: Routes = [
   // Root route displays StartpageComponent

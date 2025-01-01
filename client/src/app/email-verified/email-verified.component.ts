@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import { MatCard } from '@angular/material/card';
 import { CommonModule } from '@angular/common'; // Add this import
 import { MatButtonModule } from '@angular/material/button';

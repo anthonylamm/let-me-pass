@@ -18,7 +18,7 @@ import { AddPasswordDialogComponent } from './add-password-dialog.component';
 import { PasswordGeneratorComponent } from './password-generator.component';
 
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { decode } from 'html-entities';
+import { decode } from 'he';
 import { CryptoService } from '../../services/crypto.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatMenuModule} from '@angular/material/menu';

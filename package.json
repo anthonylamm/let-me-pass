@@ -1,8 +1,11 @@
 {
   "dependencies": {
     "argon2": "^0.41.1",
-    "html-entities": "^2.5.2",
+    "he": "^1.2.0",
     "uninstall": "^0.0.0",
     "vanta": "^0.5.24"
+  },
+  "devDependencies": {
+    "@types/he": "^1.2.3"
   }
 }
