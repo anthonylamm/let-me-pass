@@ -15,6 +15,7 @@ import { PasswordGeneratorService } from '../../services/passwordgenerator.servi
 @Component({
   selector: 'app-password-generator',
   templateUrl: './html/password-generator.html',
+  styleUrls: ['./styles/password-generator.scss'],
   standalone: true,
   imports: [
     MatFormFieldModule,
@@ -27,6 +28,7 @@ import { PasswordGeneratorService } from '../../services/passwordgenerator.servi
     ReactiveFormsModule,
     MatDialogModule
   ],
+  
 })
 export class PasswordGeneratorComponent {
   passwordForm: FormGroup;
