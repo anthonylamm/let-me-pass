@@ -75,7 +75,6 @@ export class PasswordViewComponent implements OnInit {
             const passwordDetails = response.results[0];
 
             this.originalPasswordData = passwordDetails
-            console.log(this.originalPasswordData)
               try {
               // Check if encryption key is derived
               if (!this.cryptoService.isKeyDerived()) {

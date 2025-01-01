@@ -34,10 +34,8 @@ router.post('/register', [
         const salt = crypto.randomBytes(16).toString('base64');
 
         const result = await client.query('INSERT INTO users (username, email, password, salt, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, email, hashedPassword, salt, false]);//inserting user into database
-        console.log(result.rows[0]);
 
         const token = jwt.sign({ username: result.rows[0].username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        console.log(token);
         const verificationUrl = `${process.env.FRONTEND_URL}/email-verified?token=${token}`;
 
         const emailHtml = `
@@ -64,7 +62,6 @@ router.get('/verify-email', async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('Decoded token:', decoded); // Log the decoded token
 
         const client = await pool.connect();
         try {

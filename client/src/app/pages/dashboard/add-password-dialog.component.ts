@@ -60,7 +60,6 @@ export class AddPasswordDialogComponent {
       try {
         // Encrypt the password using CryptoService
         const encryptedPassword = await this.cryptoService.encryptData(password);
-        console.log('Encrypted Password:', encryptedPassword); // Optional: For debugging
 
         // Send the encrypted password to the server
         this.userService.addPassword(sitename, username, siteurl, encryptedPassword, notes).subscribe({

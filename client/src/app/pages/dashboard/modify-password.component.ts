@@ -82,7 +82,6 @@ export class ModifyPassword {
           }
         });
 
-        console.log('Updated Password Data:', updatedData);
       } catch (error) {
         console.error('Error encrypting password:', error);
         this.snackBar.open('Error encrypting password. Please try again.', 'Close', {
