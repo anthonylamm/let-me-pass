@@ -43,7 +43,7 @@ export class ModifyPassword {
     this.modifyForm = this.fb.group({
       username: [data.username, Validators.required],
       siteurl: [decode(data.siteurl), [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?')]],
-      password: [" ", Validators.required],
+      password: ["", Validators.required],
       notes: [data.notes]
     });
   }
