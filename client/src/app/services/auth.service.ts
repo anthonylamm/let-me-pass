@@ -46,5 +46,8 @@ export class AuthService {
   confirmResetPassword(token: string, password: string){
     return this.http.post(`${this.backendUrl}/reset/reset-password`, {token, password});
   }
+  verifyEmail(token: string){
+    return this.http.get(`${this.backendUrl}/public/verify-email`, { params: { token } });
+  }
 
 }

@@ -1,11 +1,11 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
-const pool = require('../utils/db'); // Adjust the path as needed
+const pool = require('../utils/db'); 
 const argon2 = require('argon2');
 const { sendAuthEmail } = require('../utils/mailer'); // sendAuthEmail function
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto'); // Ensure crypto is imported
+const crypto = require('crypto');
 
 
 router.post('/register', [
@@ -36,9 +36,9 @@ router.post('/register', [
         const result = await client.query('INSERT INTO users (username, email, password, salt, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *', [username, email, hashedPassword, salt, false]);//inserting user into database
         console.log(result.rows[0]);
 
-        const token = jwt.sign({ username: result.rows[0].username }, process.env.JWT_SECRET, { expiresIn: '3h' });
+        const token = jwt.sign({ username: result.rows[0].username }, process.env.JWT_SECRET, { expiresIn: '1h' });
         console.log(token);
-        const verificationUrl = `${process.env.APP_URL}/api/public/verify-email?token=${token}`;
+        const verificationUrl = `${process.env.FRONTEND_URL}/email-verified?token=${token}`;
 
         const emailHtml = `
             <h1>Email Verification</h1>
@@ -57,27 +57,35 @@ router.post('/register', [
     }
 }); 
 
-router.get('/verify-email', 
-    async (req, res) => {
+// Email Verification Route
+router.get('/verify-email', async (req, res) => {
     const { token } = req.query;
+
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('Decoded token:', decoded); // Log the decoded token
+
         const client = await pool.connect();
         try {
-            const result = await client.query('UPDATE users SET email_verified = true WHERE username = $1 RETURNING *', [decoded.username]);
+            const result = await client.query(
+                'UPDATE users SET email_verified = true WHERE username = $1 RETURNING *',
+                [decoded.username]
+            );
             if (result.rows.length === 0) {
+                console.log('No user found with the provided username'); 
                 return res.status(400).json({ error: 'Invalid or expired token' });
             }
-            res.json({ message: 'Email verified successfully', user: result.rows[0] });
+
+            res.json({ message: 'Email verified successfully' });
         } catch (err) {
-            console.error(err);
+            console.error('Database error:', err); 
             res.status(500).json({ error: 'Internal Server Error' });
         } finally {
             client.release();
         }
     } catch (err) {
-        console.error(err);
+        console.error('Token verification error:', err); 
         res.status(400).json({ error: 'Invalid or expired token' });
     }
 });
@@ -94,7 +102,6 @@ router.post('/login', [
     const { username, password } = req.body;
     const client = await pool.connect();
     try {
-        console.log(username, password);
         const results = await client.query('SELECT * FROM users WHERE username =$1', [username]); //getting results from database
         const user = results.rows[0];
 
@@ -102,7 +109,6 @@ router.post('/login', [
             return res.status(400).json({ error: 'Invalid username or password' });
 
         if (!user.email_verified) {
-            console.log(user.email_verified);
             return res.status(400).json({ error: 'Please verify your email' });
         }
         const passwordMatch = await argon2.verify(user.password, password); //unhashing the password and comparing it to the password in the database

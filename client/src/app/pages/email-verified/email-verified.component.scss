@@ -1,0 +1,58 @@
+/* Reuse existing styles from signup.component.scss if needed */
+@import '../loginpage/signup.component.scss';
+
+/* Styles specific to EmailVerifiedComponent */
+.email-verified-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  background: linear-gradient(-45deg, #747474, #363c3d, #2c2f2f, #a8a8a8);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+  overflow: hidden;      
+}
+
+.login-card {
+  width: 400px; // Adjust the width as needed
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff; // White background for the card
+  border-radius: 8px;
+  text-align: center; // Center text inside the card
+  @media (max-width: 768px) {
+    width: 350px; // Slightly narrower on tablets
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 576px) {
+    width: 90%; // Full width on mobile devices
+    padding: 1rem;
+    box-shadow: none; // Remove shadow for simpler design on small screens
+  }
+}
+
+h1 {
+  color: #363c3d; // Header color
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+p {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  
+  
+    @media (max-width: 576px) {
+      padding: 0.6rem;
+      font-size: 0.9rem;
+    }
+  }

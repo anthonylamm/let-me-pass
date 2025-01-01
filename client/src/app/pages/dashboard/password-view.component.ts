@@ -114,6 +114,10 @@ export class PasswordViewComponent implements OnInit {
      }
 
   }
+  navHome(event: Event): void {
+    event.preventDefault();
+    this.router.navigate(['/start']);
+  }
   getFaviconUrl(siteurl: string): string {
     try {
       const decodedHtml = decode(siteurl);

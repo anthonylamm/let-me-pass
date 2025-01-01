@@ -114,7 +114,6 @@ router.get('/get-password', async (req, res) => {
             WHERE (sitename ILIKE $1 OR siteurl ILIKE $1) AND user_id = $2
         `, [`%${searchField}%`, user_id]);
 
-        console.log('Query Results:', results.rows);
 
         res.status(200).json({ message: 'Query successful', results: results.rows });
     } catch (error) {

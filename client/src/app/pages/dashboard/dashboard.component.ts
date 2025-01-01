@@ -166,6 +166,10 @@ applyFilter(filterValue: string): void {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
+  navHome(event: Event): void {
+    event.preventDefault();
+    this.router.navigate(['/start']);
+  }
  
   navPass(event: Event): void{
 

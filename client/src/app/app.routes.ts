@@ -5,14 +5,17 @@ import { SignupComponent } from './pages/loginpage/signup.component';
 import { ResetPasswordComponent } from './pages/loginpage/components/reset-password.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PasswordViewComponent } from './pages/dashboard/password-view.component';
+import { EmailVerifiedComponent } from './pages/email-verified/email-verified.component';
+
 export const routes: Routes = [
   // Root route displays StartpageComponent
   { path: '', component: StartpageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  {path: 'reset-password', component: ResetPasswordComponent},
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'email-verified', component: EmailVerifiedComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'dashboard/:sitename', component: PasswordViewComponent},
+  { path: 'dashboard/:sitename', component: PasswordViewComponent },
   { path: '**', redirectTo: '' },
 
 
