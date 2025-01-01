@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development"
   },
   "private": true,
@@ -30,6 +30,7 @@
     "@angular/cli": "^19.0.6",
     "@angular/compiler-cli": "^19.0.0",
     "@types/three": "^0.171.0",
+    "@vercel/static-build": "^2.5.39",
     "typescript": "~5.6.2"
   }
 }
