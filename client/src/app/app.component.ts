@@ -8,6 +8,19 @@ import { RouterOutlet } from '@angular/router';
   template: `
     <router-outlet></router-outlet>
   `,
-  styles: [],
+  styles: [`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+    }
+
+    router-outlet {
+      flex: 1;
+      display: flex;
+      flex-direction: column; /* Ensure child components stack vertically */
+    }
+  `],
 })
 export class AppComponent {}

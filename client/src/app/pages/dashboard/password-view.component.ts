@@ -53,8 +53,8 @@ export class PasswordViewComponent implements OnInit {
   ){
     this.passwordForm = this.fb.group({
       username: [{ value: '', disabled: true }, Validators.required],
-      password: [{ value: '', disabled: true }, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?')],
-      siteurl: [{ value: '', disabled: true }, Validators.required],
+      password: [{ value: '', disabled: true },  Validators.required],
+      siteurl: [{ value: '', disabled: true }, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?')],
       sitename: [{ value: '', disabled: true },  Validators.required],
       notes: [{ value: '', disabled: true }]
     });
@@ -62,7 +62,7 @@ export class PasswordViewComponent implements OnInit {
 
   
   ngOnInit(): void {
-    this.passwordData = this.passwordService.getSelectedPasswordData();
+    this.passwordData = this.passwordService.getSelectedPasswordData();//
 
     if (!this.passwordData) {
       console.warn('No password data found. Redirecting to dashboard.');
@@ -75,7 +75,7 @@ export class PasswordViewComponent implements OnInit {
             const passwordDetails = response.results[0];
 
             this.originalPasswordData = passwordDetails
-            
+            console.log(this.originalPasswordData)
               try {
               // Check if encryption key is derived
               if (!this.cryptoService.isKeyDerived()) {
@@ -88,7 +88,8 @@ export class PasswordViewComponent implements OnInit {
               }
               // Decrypt the password using CryptoService
               const decryptedPassword = await this.cryptoService.decryptData(passwordDetails.encryptedpassword);
-
+            
+              
               // Patch the form with decrypted password and other details
               this.passwordForm.patchValue({
                 username: passwordDetails.username,
@@ -182,5 +183,5 @@ export class PasswordViewComponent implements OnInit {
     });
   }
 
- 
+
 }

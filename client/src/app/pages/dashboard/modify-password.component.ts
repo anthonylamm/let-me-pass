@@ -9,6 +9,7 @@ import { UserService } from '../../services/user.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { decode } from 'html-entities';
 import { MatIconModule } from '@angular/material/icon';
+import { CryptoService } from '../../services/crypto.service';
 
 
 @Component({
@@ -34,47 +35,61 @@ export class ModifyPassword {
     private dialogRef: MatDialogRef<ModifyPassword>,
     private userService: UserService,
     private snackBar: MatSnackBar,
+    private cryptoService: CryptoService,
+
     @Inject(MAT_DIALOG_DATA) public data: any // Receiving the passed data
 
   ) {
     this.modifyForm = this.fb.group({
       username: [data.username, Validators.required],
       siteurl: [decode(data.siteurl), [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?')]],
-      password: [data.encryptedpassword, Validators.required],
+      password: [" ", Validators.required],
       notes: [data.notes]
     });
   }
 
-  onSave(): void {
+  
+  async onSave(): Promise<void> {
     if (this.modifyForm.valid) {
       const updatedData = {
         ...this.data, // Include existing data like password_id
         ...this.modifyForm.value
-    }
+      };
 
-    this.userService.modifyUserLogin(
-      updatedData.password_id, 
-      updatedData.sitename, 
-      updatedData.username, 
-      updatedData.siteurl,
-      updatedData.password,
-      updatedData.notes,
-      ).subscribe({
-        next: (response: any) => {
-          this.snackBar.open(response.message, 'Close', {
-            duration: 3000,
-          });
-          this.dialogRef.close(this.modifyForm.value);
-        },
-        error: (err) => {
-          this.snackBar.open('Error adding password', 'Close', {
-            duration: 3000,
-          });
-        }
-      })
-    console.log('Updated Password Data:', updatedData);
-    this.data = null
-  }
+      try {
+        // Encrypt the updated password
+        const encryptedPassword = await this.cryptoService.encryptData(updatedData.password);
+        updatedData.password = encryptedPassword;
+
+        this.userService.modifyUserLogin(
+          updatedData.password_id,
+          updatedData.sitename,
+          updatedData.username,
+          updatedData.siteurl,
+          updatedData.password,
+          updatedData.notes
+        ).subscribe({
+          next: (response: any) => {
+            this.snackBar.open(response.message, 'Close', {
+              duration: 3000,
+            });
+            this.dialogRef.close(this.modifyForm.value);
+          },
+          error: (err) => {
+            this.snackBar.open('Error updating password', 'Close', {
+              duration: 3000,
+            });
+          }
+        });
+
+        console.log('Updated Password Data:', updatedData);
+      } catch (error) {
+        console.error('Error encrypting password:', error);
+        this.snackBar.open('Error encrypting password. Please try again.', 'Close', {
+          duration: 3000,
+        });
+      }
+    }
   }
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;

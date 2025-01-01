@@ -17,7 +17,7 @@ import { CryptoService } from '../../services/crypto.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  templateUrl: './login.html',
+  templateUrl: './html/login.html',
   styleUrls: ['./signup.component.scss'],
   imports: [
     MatCardModule,

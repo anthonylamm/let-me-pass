@@ -1,0 +1,83 @@
+<div class="signup-container" #vantaContainer>
+  <mat-card class="signup-card">
+      <h2>Signup</h2>
+      <form (ngSubmit)="onSignup()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Username</mat-label>
+          <input matInput [(ngModel)]="username" name="username" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            [(ngModel)]="password"
+            name="password"
+            required
+            (ngModelChange)="checkPasswordStrength()"
+          />
+          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Password Strength Indicators -->
+        <div class="password-strength">
+          <p>Password Strength:</p>
+          <ul>
+            <li [ngStyle]="{ color: passwordCriteria.length ? 'green' : 'red' }">
+              &#10004; At least 6 characters
+            </li>
+            <li [ngStyle]="{ color: passwordCriteria.symbol ? 'green' : 'red' }">
+              &#10004; Includes a symbol (!,#,$, etc.)
+            </li>
+            <li [ngStyle]="{ color: passwordCriteria.numbers ? 'green' : 'red' }">
+              &#10004; Contains numbers
+            </li>
+          </ul>
+        </div>
+
+        <!-- Terms and Conditions Checkbox -->
+        <div class="terms-container">
+          <mat-checkbox [(ngModel)]="acceptTerms" name="acceptTerms" required>
+            I agree to the 
+            <a href="#" (click)="openTerms($event)">terms and conditions</a>
+          </mat-checkbox>
+        </div>
+
+        <div class="buttons-container">
+          <button
+            mat-raised-button
+            color="accent"
+            type="submit"
+            [disabled]="!isFormValid()"
+            class="signup-button"
+          >
+            Signup
+          </button>
+
+          <div class="divider-container">
+            <mat-divider></mat-divider>
+            <span class="divider-text">OR</span>
+            <mat-divider></mat-divider>
+          </div>
+
+          <button
+            mat-raised-button
+            color="accent"
+            type="button"
+            (click)="onLogin()"
+            class="signup-button"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </mat-card>
+</div>
