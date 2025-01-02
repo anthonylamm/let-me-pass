@@ -1,0 +1,48 @@
+[33mca0cb77[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m updata server
+[33m4a42663[m Remove extra /api prefix from Express routes to fix routing
+[33m2228001[m please wortk
+[33m203c06e[m update vercel.json again omg
+[33md5f282f[m update vercel.json
+[33m088ca69[m Update CORS configuration to allow preview frontend origins
+[33mc8b1e23[m again
+[33m3e56905[m cors reconfigure
+[33m5551ea7[m vercel location change
+[33mad7ab20[m re-configured
+[33m32dc287[m Configure Vercel serverless deployment for frontend and backend
+[33m34e6f17[m remove logs
+[33m5378984[m removed console.log
+[33m6e739ad[m deployment redo
+[33mc04289a[m Configure Vercel for Angular deployment using static-build
+[33m319fecc[m uipdate
+[33md970496[m removed error
+[33meeb7ba4[m deployment stuff
+[33m1e7543f[m added a email verification component
+[33m436cd0a[m password field bug
+[33md797d69[m scss styling in the start page
+[33m83ea835[m added scss for the password generator
+[33m4dcf404[m password generator implementation
+[33m8f70960[m added a search filter
+[33m750b0f0[m added some styling and user friendly ui controls
+[33m47eb764[m implemented edit functionality
+[33me3ee2a7[m user can now see their password info
+[33m9e15be5[m password view styling and data binded info
+[33mac2d807[m added password-view componenet
+[33m2787518[m dashboard changes
+[33m3643f32[m implement a view of the users password and the function to add more passwords
+[33m3a54d40[m dashboard page implemented
+[33mc122d73[m implemented user routes
+[33ma89956a[m switched from bycrypt to argon
+[33m7c52bb1[m finalized and finished the login/register componenet
+[33m96a9d91[m added reset password link onto login component
+[33m68a1ef2[m added password reset functionallity
+[33m4840d56[m added reset password route
+[33m1e844cb[m added terms and conditions
+[33m1bed081[m implementing signup and some sass styling
+[33m609c308[m login works with jwt
+[33m0e51487[m added signup and login routes
+[33m7428d12[m added login functionality
+[33m648754a[m email verification implemented
+[33m57a489b[m updated angular and doing public routes
+[33m7d89321[m installed angular
+[33m48f3e9b[m db connection and user routes
+[33m1e2524f[m basic environment setup

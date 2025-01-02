@@ -1,4 +1,4 @@
 export const environment = {
-    production: false,
-    apiUrl: 'https://let-me-pass-client.vercel.app'
+    production: true,
+    apiUrl: 'https://let-me-pass-client.onrender.com'
   };
