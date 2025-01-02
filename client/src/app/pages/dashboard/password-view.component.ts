@@ -149,7 +149,6 @@ export class PasswordViewComponent implements OnInit {
     if (userConfirmed) {
       this.userService.deleteUserPassword(this.passwordData.password_id).subscribe({
         next: (response: any) => {
-          console.log('Password deleted successfully:', response);
           this.router.navigate(['/dashboard']);
           this.snackBar.open('Login information successfully deleted.', 'Close', {
             duration: 3000,

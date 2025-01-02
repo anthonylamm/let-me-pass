@@ -90,9 +90,6 @@ export class SignupComponent {
   }
 
   onSignup() {
-    console.log('Username:', this.username);
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
 
     if (!this.isPasswordStrong()) {
       this.snackBar.open(
@@ -114,7 +111,6 @@ export class SignupComponent {
 
     this.authService.signup(this.username, this.email, this.password).subscribe({
       next: (response: any) => {
-        console.log(response);
 
         this.snackBar.open(
           'Registration successful! Check your email to verify your account.',
@@ -130,7 +126,6 @@ export class SignupComponent {
         }, 5000); // Redirect to login after 5 seconds
       },
       error: (error: any) => {
-        console.log( error);
         console.error('Signup error:', error);
         const errorMessage =
           error.error?.error || 'Signup failed. Please try again.';

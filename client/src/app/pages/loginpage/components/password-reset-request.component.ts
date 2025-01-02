@@ -61,7 +61,6 @@ export class PasswordResetRequestComponent {
       this.authService.resetPassword(this.email).subscribe({
         next: (response: any) => {
           const message = response.message || 'Password reset email sent. Please check your email.';
-          console.log(response); // Remove in production
           this.snackBar.open(message, 'Close', {
             duration: 3000,
           });
